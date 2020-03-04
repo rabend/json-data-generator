@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "article",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "status",
+    "attributes"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "height": {
+      "type": "number"
+    },
+    "isOrganic": {
+      "type": "boolean"
+    },
+    "weight": {
+      "type": "integer"
+    },
+    "eans": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ean": {
+            "type": "string"
+          },
+          "type": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "packagingtype": {
+      "type": "string",
+      "enum": ["STK", "KGG", "KGW", "KG"]
+    },
+    "country": {
+      "type": "string",
+      "maxLength": 2
+    },
+    "producttype": {
+      "type": "string",
+      "minLength": 18
+    },
+    "plu": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 6,
+      "pattern": "^[29].*"
+    },
+    "sku": {
+      "type": "string",
+      "pattern": "[0-9]+",
+      "maxLength": 10
+    },
+    "onlinesince": {
+      "type": "string",
+      "format": "date"
+    },
+    "flags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["org", "foo", "bar", "baz"]
+      }
+    },
+    "producttags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fitratio": {
+      "type": "number",
+      "maximum": 1
+    },
+    "units": {
+      "type": "number",
+      "minimum": 0,
+      "exclusiveMinimum": true
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 200
+    },
+    "promotionuntil": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
