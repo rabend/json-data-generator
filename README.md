@@ -1,3 +1,5 @@
+![Java CI](https://github.com/rabend/json-data-generator/workflows/Java%20CI/badge.svg?branch=master)
+
 # JSON Data Generator
 Generator for random JSON strings to test your REST-Services!
 
