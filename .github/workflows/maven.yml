@@ -17,8 +17,8 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: Publish package
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       run: |
         mkdir -p ~/.m2
-        echo "<settings><servers><server><id>github</id><username>rabend</username><password>${GITHUB_TOKEN}</password></server></servers></settings>" > ~/.m2/settings.xml
+        echo "<settings><servers><server><id>ossrh</id><properties><gpg.executable>gpg2</gpg.executable><gpg.passphrase>${GPG_PASSPHRASE}</gpg.passphrase></properties></server></servers></settings>" > ~/.m2/settings.xml
         mvn -B deploy
