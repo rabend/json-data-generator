@@ -15,10 +15,10 @@ jobs:
         java-version: 11
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - name: Publish package
-      env:
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      run: |
-        mkdir -p ~/.m2
-        echo "<settings><servers><server><id>ossrh</id><properties><gpg.executable>gpg2</gpg.executable><gpg.passphrase>${GPG_PASSPHRASE}</gpg.passphrase></properties></server></servers></settings>" > ~/.m2/settings.xml
-        mvn -B deploy
+    - name: Release Maven package
+      uses: samuelmeuli/action-maven-publish@v1
+      with:
+        gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+        gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
+        nexus_username: ${{ secrets.NEXUS_USERNAME }}
+        nexus_password: ${{ secrets.NEXUS_PASSWORD }}
