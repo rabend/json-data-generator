@@ -25,7 +25,7 @@ public class TestDataGenerator {
      * Generates a json string with random values for the keys defined in the json schema.
      * Values will be generated according to any restrictions in the schema, if present.
      * @return a json string
-     * @throws IOException
+     * @throws IOException in case the schema cannot be read
      */
     public String generateJsonString() throws IOException {
         JsonNode baseNode = mapper.readTree(this.schemaUrl);
