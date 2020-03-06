@@ -8,7 +8,7 @@ This lib was created to help us run our load tests with lots of different, rando
 It creates JSON-Strings based on a JSON-Schema with random attribute values.
 
 ## The 'how-to'
-Clone the repository and run `mvn clean install`. Then include the lib in your project with 
+Include the lib in your project with 
 ```
     <dependency>
         <groupId>com.github.rabend</groupId>
@@ -17,7 +17,7 @@ Clone the repository and run `mvn clean install`. Then include the lib in your p
     </dependency>
 ```
 
-Just use the class ```TestDataGenerator``` in your testcase, 
+Just use the class ```TestDataGenerator``` in your test case, 
 instantiate it with an URL to the schema you want to generate data for 
 and call ```generateJsonString()``` as often as you need. It will return a JSON-String representation
 of the object specified by the schema, with random attribute values.
