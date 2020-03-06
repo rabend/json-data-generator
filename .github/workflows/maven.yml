@@ -5,7 +5,7 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-19.04
 
     steps:
     - uses: actions/checkout@v2
@@ -18,9 +18,6 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Import key
-      run: gpg --import --batch ${{ secrets.GPG_PRIVATE_KEY }}
-
     - name: Release Maven package
       uses: samuelmeuli/action-maven-publish@v1
       with:
@@ -28,3 +25,4 @@ jobs:
         gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
         nexus_username: ${{ secrets.NEXUS_USERNAME }}
         nexus_password: ${{ secrets.NEXUS_PASSWORD }}
+        maven_goals_phases: deploy
