@@ -29,7 +29,7 @@
 
     <groupId>com.github.rabend</groupId>
     <artifactId>json-data-generator</artifactId>
-    <version>0.14</version>
+    <version>0.15</version>
 
     <properties>
         <java.version>11</java.version>
