@@ -14,9 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.3'
     implementation 'com.github.mifmif:generex:1.0.2'
-    testImplementation 'junit:junit:4.13.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2"
 

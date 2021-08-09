@@ -1,12 +1,12 @@
 package com.github.rabend
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.rabend.generators.ObjectGenerator
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 import java.io.IOException
 import java.net.URL
 
-class TestDataGenerator(private val schemaUrl: URL) {
-    private val mapper: ObjectMapper
+class TestDataGenerator {
 
     /**
      * Generates a json string with random values for the keys defined in the json schema.
@@ -16,17 +16,10 @@ class TestDataGenerator(private val schemaUrl: URL) {
      * @throws IOException in case the schema cannot be read
      */
     @Throws(IOException::class)
-    fun generateJsonString(): String {
-        val baseNode = mapper.readTree(schemaUrl)
-        return ObjectGenerator().generateRandomValue(baseNode)
-    }
+    fun generateJsonString(schemaUrl: URL): String {
+        val schemaString = schemaUrl.readText()
+        val baseObject = Json.parseToJsonElement(schemaString) as JsonObject
 
-    /**
-     * Constructor
-     *
-     * @param schemaUrl URL to a valid json schema
-     */
-    init {
-        mapper = ObjectMapper()
+        return ObjectGenerator().generateRandomValue(baseObject).toString()
     }
 }
