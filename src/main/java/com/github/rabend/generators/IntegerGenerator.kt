@@ -1,17 +1,20 @@
 package com.github.rabend.generators
 
-import com.fasterxml.jackson.databind.JsonNode
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonPrimitive
 import java.util.concurrent.ThreadLocalRandom
 
 class IntegerGenerator : AbstractValueGenerator() {
-    override fun generateRandomValue(node: JsonNode?): String? {
-        val randomInt: Int
+    override fun generateRandomValue(node: JsonObject): JsonElement{
         val random = ThreadLocalRandom.current()
-        if (node!!.has("minimum")) {
-            randomInt = random.nextInt(node["minimum"].asInt(), Int.MAX_VALUE)
-            return randomInt.toString()
+        val randomInt = if (node.containsKey("minimum")) {
+            random.nextInt(node["minimum"]!!.jsonPrimitive.int, Int.MAX_VALUE)
+        } else {
+            random.nextInt(0, Int.MAX_VALUE)
         }
-        randomInt = random.nextInt(0, Int.MAX_VALUE)
-        return randomInt.toString()
+        return JsonPrimitive(randomInt)
     }
 }
