@@ -1,82 +1,59 @@
-package com.github.rabend.generators;
+package com.github.rabend.generators
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.concurrent.ThreadLocalRandom;
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.concurrent.ThreadLocalRandom
 
-public class SimpleDateGenerator {
-    public LocalDate generateDate() {
-        DateSeed dateSeed = new DateSeed().invoke();
-        int year = dateSeed.getYear();
-        int month = dateSeed.getMonth();
-        int day = dateSeed.getDay();
-
-        return LocalDate.of(year, month, day);
+class SimpleDateGenerator {
+    fun generateDate(): LocalDate {
+        val dateSeed = DateSeed().invoke()
+        val year = dateSeed.year
+        val month = dateSeed.month
+        val day = dateSeed.day
+        return LocalDate.of(year, month, day)
     }
 
-    public LocalDateTime generateDateTime() {
-        DateSeed dateSeed = new DateSeed().invoke();
-        int year = dateSeed.getYear();
-        int month = dateSeed.getMonth();
-        int day = dateSeed.getDay();
-        int hour = dateSeed.getHour();
-        int minute = dateSeed.getMinute();
-        int second = dateSeed.getSecond();
-
-        return LocalDateTime.of(year, month, day, hour, minute, second);
+    fun generateDateTime(): LocalDateTime {
+        val dateSeed = DateSeed().invoke()
+        val year = dateSeed.year
+        val month = dateSeed.month
+        val day = dateSeed.day
+        val hour = dateSeed.hour
+        val minute = dateSeed.minute
+        val second = dateSeed.second
+        return LocalDateTime.of(year, month, day, hour, minute, second)
     }
 
-    private class DateSeed {
-        private int year;
-        private int month;
-        private int day;
-        private int hour;
-        private int minute;
-        private int second;
+    private inner class DateSeed {
+        var year = 0
+            private set
+        var month = 0
+            private set
+        var day = 0
+            private set
+        var hour = 0
+            private set
+        var minute = 0
+            private set
+        var second = 0
+            private set
 
-        public int getYear() {
-            return year;
-        }
-
-        public int getMonth() {
-            return month;
-        }
-
-        public int getDay() {
-            return day;
-        }
-
-        public int getHour() {
-            return hour;
-        }
-
-        public int getMinute() {
-            return minute;
-        }
-
-        public int getSecond() {
-            return second;
-        }
-
-        public DateSeed invoke() {
-            ThreadLocalRandom random = ThreadLocalRandom.current();
-
-            int currentYear = LocalDate.now().getYear();
-            year = random.nextInt(1970, currentYear);
-            month = random.nextInt(1, 13);
-            if (month == 2) {
-                day = random.nextInt(1, 29);
+        operator fun invoke(): DateSeed {
+            val random = ThreadLocalRandom.current()
+            val currentYear = LocalDate.now().year
+            year = random.nextInt(1970, currentYear)
+            month = random.nextInt(1, 13)
+            day = if (month == 2) {
+                random.nextInt(1, 29)
             } else if (month == 9 || month == 11 || month % 2 == 0) {
-                day = random.nextInt(1, 31);
+                random.nextInt(1, 31)
             } else {
-                day = random.nextInt(1, 32);
+                random.nextInt(1, 32)
             }
-
-            hour = random.nextInt(0, 24);
-            minute = random.nextInt(0, 60);
-            second = random.nextInt(0, 60);
-
-            return this;
+            hour = random.nextInt(0, 24)
+            minute = random.nextInt(0, 60)
+            second = random.nextInt(0, 60)
+            return this
         }
     }
 }

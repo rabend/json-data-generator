@@ -1,65 +1,56 @@
-package com.github.rabend.generators;
+package com.github.rabend.generators
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.mifmif.common.regex.Generex;
+import com.fasterxml.jackson.databind.JsonNode
+import com.mifmif.common.regex.Generex
+import java.util.*
+import java.util.concurrent.ThreadLocalRandom
 
-import java.util.concurrent.ThreadLocalRandom;
-
-public class StringGenerator extends AbstractValueGenerator {
-
-    private static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ ";
-    private static final String LOWERCASE = UPPERCASE.toLowerCase();
-    private static final String DIGITS = "0123456789";
-    private static final String ALL_CHARS = UPPERCASE + LOWERCASE + DIGITS;
-    public static final String FORMAT = "format";
-
-
-    @Override
-    public String generateRandomValue(final JsonNode node) {
-        if (node.has(FORMAT)) {
-            if (node.get(FORMAT).asText().equalsIgnoreCase("date")) {
-                return "\"" + new SimpleDateGenerator().generateDate().toString() + "\"";
-            } else if (node.get(FORMAT).asText().equalsIgnoreCase("date-time")) {
-                return "\"" + new SimpleDateGenerator().generateDateTime().toString() + "\"";
+class StringGenerator : AbstractValueGenerator() {
+    override fun generateRandomValue(node: JsonNode?): String? {
+        if (node!!.has(FORMAT)) {
+            if (node[FORMAT].asText().equals("date", ignoreCase = true)) {
+                return "\"" + SimpleDateGenerator().generateDate().toString() + "\""
+            } else if (node[FORMAT].asText().equals("date-time", ignoreCase = true)) {
+                return "\"" + SimpleDateGenerator().generateDateTime().toString() + "\""
             }
         }
-
-        int maxLength = 50;
-        int minLength = 6;
-
+        var maxLength = 50
+        var minLength = 6
         if (node.has("maxLength")) {
-            maxLength = node.get("maxLength").asInt() + 1;
-            minLength = 0;
+            maxLength = node["maxLength"].asInt() + 1
+            minLength = 0
         }
-
         if (node.has("minLength")) {
-            minLength = node.get("minLength").asInt();
+            minLength = node["minLength"].asInt()
         }
-
         if (node.has("pattern")) {
-            String regex = node.get("pattern").asText();
-            regex = regex.replace("^", "");
-            regex = regex.replace("$", "");
-            Generex generex = new Generex(regex);
-            return "\"" + generex.random(minLength, maxLength - 1) + "\"";
+            var regex = node["pattern"].asText()
+            regex = regex.replace("^", "")
+            regex = regex.replace("$", "")
+            val generex = Generex(regex)
+            return "\"" + generex.random(minLength, maxLength - 1) + "\""
         }
-
-        ThreadLocalRandom random = ThreadLocalRandom.current();
+        val random = ThreadLocalRandom.current()
         if (node.has("enum")) {
-            JsonNode enumNode = node.withArray("enum");
-            int bound = enumNode.size() == 1 ? 1 : enumNode.size() - 1;
-            int randomIndex = random.nextInt(bound);
-            return "\"" + enumNode.get(randomIndex).asText() + "\"";
+            val enumNode = node.withArray<JsonNode>("enum")
+            val bound = if (enumNode.size() == 1) 1 else enumNode.size() - 1
+            val randomIndex = random.nextInt(bound)
+            return "\"" + enumNode[randomIndex].asText() + "\""
         }
-
-        int randomLength = random.nextInt(minLength, maxLength);
-
-        char[] chars = new char[randomLength];
-        for (int i = 0; i < randomLength; i++) {
-            int bound = random.nextInt(ALL_CHARS.length() - 1);
-            chars[i] = ALL_CHARS.toCharArray()[bound];
+        val randomLength = random.nextInt(minLength, maxLength)
+        val chars = CharArray(randomLength)
+        for (i in 0 until randomLength) {
+            val bound = random.nextInt(ALL_CHARS.length - 1)
+            chars[i] = ALL_CHARS.toCharArray()[bound]
         }
+        return "\"" + String(chars) + "\""
+    }
 
-        return "\"" + new String(chars) + "\"";
+    companion object {
+        private const val UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ "
+        private val LOWERCASE = UPPERCASE.lowercase(Locale.getDefault())
+        private const val DIGITS = "0123456789"
+        private val ALL_CHARS = UPPERCASE + LOWERCASE + DIGITS
+        const val FORMAT = "format"
     }
 }

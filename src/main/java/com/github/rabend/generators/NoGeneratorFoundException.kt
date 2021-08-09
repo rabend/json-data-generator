@@ -1,7 +1,3 @@
-package com.github.rabend.generators;
+package com.github.rabend.generators
 
-public class NoGeneratorFoundException extends RuntimeException {
-    public NoGeneratorFoundException(final String s) {
-        super(s);
-    }
-}
+class NoGeneratorFoundException(s: String?) : RuntimeException(s)

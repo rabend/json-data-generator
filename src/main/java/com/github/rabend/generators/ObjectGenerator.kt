@@ -1,37 +1,31 @@
-package com.github.rabend.generators;
+package com.github.rabend.generators
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode
+import java.util.stream.Collectors
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-public class ObjectGenerator extends AbstractValueGenerator {
-    @Override
-    public String generateRandomValue(final JsonNode node) {
-        Map<String, AbstractValueGenerator> propertyToGenerator = new HashMap<>();
-        if (node.has("properties")) {
-
-            JsonNode propertiesNode = node.get("properties");
-
+class ObjectGenerator : AbstractValueGenerator() {
+    override fun generateRandomValue(node: JsonNode?): String {
+        val propertyToGenerator: MutableMap<String, AbstractValueGenerator> = HashMap()
+        return if (node!!.has("properties")) {
+            val propertiesNode = node["properties"]
             propertiesNode.fields()
-                    .forEachRemaining(propAndNode ->
-                            propertyToGenerator.put(propAndNode.getKey(),
-                                    ValueGeneratorsLookup.getGeneratorForType(propAndNode.getValue().get("type").asText())));
-
-            return propertyToGenerator.entrySet()
-                    .stream()
-                    .map(propToGen -> {
-                        String propName = propToGen.getKey();
-                        return createKey(propName) + propToGen.getValue().generateRandomValue(propertiesNode.get(propName));
-                    })
-                    .collect(Collectors.joining(",", "{", "}"));
+                .forEachRemaining { (key, value): Map.Entry<String, JsonNode> ->
+                    propertyToGenerator[key] = ValueGeneratorsLookup.getGeneratorForType(
+                        value["type"].asText()
+                    )
+                }
+            propertyToGenerator.entries
+                .stream()
+                .map { (propName, value): Map.Entry<String, AbstractValueGenerator> ->
+                    createKey(propName) + value.generateRandomValue(propertiesNode[propName])
+                }
+                .collect(Collectors.joining(",", "{", "}"))
         } else {
-            return "{}";
+            "{}"
         }
     }
 
-    private String createKey(final String prop) {
-        return "\"" + prop + "\":";
+    private fun createKey(prop: String): String {
+        return "\"$prop\":"
     }
 }

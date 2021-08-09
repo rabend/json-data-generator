@@ -1,34 +1,27 @@
-package com.github.rabend.generators;
+package com.github.rabend.generators
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode
+import java.util.concurrent.ThreadLocalRandom
 
-import java.util.concurrent.ThreadLocalRandom;
-
-public class DoubleGenerator extends AbstractValueGenerator {
-    @Override
-    public String generateRandomValue(final JsonNode node) {
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-
-        Double minVal = 0.0;
-        Double maxVal = Double.MAX_VALUE;
-        boolean exclusive = false;
-        if (node.has("minimum")) {
+class DoubleGenerator : AbstractValueGenerator() {
+    override fun generateRandomValue(node: JsonNode?): String? {
+        val random = ThreadLocalRandom.current()
+        var minVal = 0.0
+        var maxVal = Double.MAX_VALUE
+        var exclusive = false
+        if (node!!.has("minimum")) {
             if (node.has("exclusiveMinimum")) {
-                exclusive = node.get("exclusiveMinimum").asBoolean();
+                exclusive = node["exclusiveMinimum"].asBoolean()
             }
-
-            minVal = node.get("minimum").asDouble();
-
+            minVal = node["minimum"].asDouble()
             if (exclusive) {
-                minVal++;
+                minVal++
             }
         }
-
         if (node.has("maximum")) {
-            maxVal = node.get("maximum").asDouble();
+            maxVal = node["maximum"].asDouble()
         }
-
-        Double randomDouble = random.nextDouble(minVal, maxVal);
-        return randomDouble.toString();
+        val randomDouble = random.nextDouble(minVal, maxVal)
+        return randomDouble.toString()
     }
 }

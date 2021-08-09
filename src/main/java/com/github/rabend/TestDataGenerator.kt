@@ -1,34 +1,32 @@
-package com.github.rabend;
+package com.github.rabend
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.rabend.generators.ObjectGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.rabend.generators.ObjectGenerator
+import java.io.IOException
+import java.net.URL
 
-import java.io.IOException;
-import java.net.URL;
-
-public class TestDataGenerator {
-
-    private final URL schemaUrl;
-    private final ObjectMapper mapper;
-
-    /**
-     * Constructor
-     * @param schemaUrl URL to a valid json schema
-     */
-    public TestDataGenerator(final URL schemaUrl) {
-        this.schemaUrl = schemaUrl;
-        this.mapper = new ObjectMapper();
-    }
+class TestDataGenerator(private val schemaUrl: URL) {
+    private val mapper: ObjectMapper
 
     /**
      * Generates a json string with random values for the keys defined in the json schema.
      * Values will be generated according to any restrictions in the schema, if present.
+     *
      * @return a json string
      * @throws IOException in case the schema cannot be read
      */
-    public String generateJsonString() throws IOException {
-        JsonNode baseNode = mapper.readTree(this.schemaUrl);
-        return new ObjectGenerator().generateRandomValue(baseNode);
+    @Throws(IOException::class)
+    fun generateJsonString(): String {
+        val baseNode = mapper.readTree(schemaUrl)
+        return ObjectGenerator().generateRandomValue(baseNode)
+    }
+
+    /**
+     * Constructor
+     *
+     * @param schemaUrl URL to a valid json schema
+     */
+    init {
+        mapper = ObjectMapper()
     }
 }

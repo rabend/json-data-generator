@@ -1,21 +1,17 @@
-package com.github.rabend.generators;
+package com.github.rabend.generators
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode
+import java.util.concurrent.ThreadLocalRandom
 
-import java.util.concurrent.ThreadLocalRandom;
-
-public class IntegerGenerator extends AbstractValueGenerator {
-    @Override
-    public String generateRandomValue(final JsonNode node) {
-        Integer randomInt;
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-
-        if (node.has("minimum")) {
-            randomInt = random.nextInt(node.get("minimum").asInt(), Integer.MAX_VALUE);
-            return randomInt.toString();
+class IntegerGenerator : AbstractValueGenerator() {
+    override fun generateRandomValue(node: JsonNode?): String? {
+        val randomInt: Int
+        val random = ThreadLocalRandom.current()
+        if (node!!.has("minimum")) {
+            randomInt = random.nextInt(node["minimum"].asInt(), Int.MAX_VALUE)
+            return randomInt.toString()
         }
-
-        randomInt = random.nextInt(0, Integer.MAX_VALUE);
-        return randomInt.toString();
+        randomInt = random.nextInt(0, Int.MAX_VALUE)
+        return randomInt.toString()
     }
 }

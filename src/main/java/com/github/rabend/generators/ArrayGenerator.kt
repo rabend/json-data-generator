@@ -1,29 +1,21 @@
-package com.github.rabend.generators;
+package com.github.rabend.generators
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode
+import java.util.concurrent.ThreadLocalRandom
+import java.util.stream.Collectors
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-
-public class ArrayGenerator extends AbstractValueGenerator {
-    @Override
-    public String generateRandomValue(final JsonNode node) {
-        JsonNode itemsNode = node.get("items");
-        AbstractValueGenerator itemGenerator = ValueGeneratorsLookup.getGeneratorForType(itemsNode.get("type").asText());
-
-        int arrayCount = ThreadLocalRandom.current().nextInt(6);
-
+class ArrayGenerator : AbstractValueGenerator() {
+    override fun generateRandomValue(node: JsonNode?): String? {
+        val itemsNode = node!!["items"]
+        val itemGenerator = ValueGeneratorsLookup.getGeneratorForType(itemsNode["type"].asText())
+        var arrayCount = ThreadLocalRandom.current().nextInt(6)
         if (itemsNode.has("enum")) {
-            arrayCount = itemsNode.withArray("enum").size();
+            arrayCount = itemsNode.withArray<JsonNode>("enum").size()
         }
-
-        Set<String> values = new HashSet<>();
-        for (int i = 0; i < arrayCount; i++) {
-            values.add(itemGenerator.generateRandomValue(itemsNode));
+        val values: MutableSet<String?> = HashSet()
+        for (i in 0 until arrayCount) {
+            values.add(itemGenerator.generateRandomValue(itemsNode))
         }
-
-        return values.stream().collect(Collectors.joining(",", "[", "]"));
+        return values.stream().collect(Collectors.joining(",", "[", "]"))
     }
 }
