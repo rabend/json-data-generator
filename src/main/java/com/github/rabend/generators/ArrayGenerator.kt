@@ -1,21 +1,24 @@
 package com.github.rabend.generators
 
-import com.fasterxml.jackson.databind.JsonNode
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonPrimitive
 import java.util.concurrent.ThreadLocalRandom
-import java.util.stream.Collectors
 
 class ArrayGenerator : AbstractValueGenerator() {
-    override fun generateRandomValue(node: JsonNode?): String? {
-        val itemsNode = node!!["items"]
-        val itemGenerator = ValueGeneratorsLookup.getGeneratorForType(itemsNode["type"].asText())
+    override fun generateRandomValue(node: JsonObject): JsonElement {
+        val itemsNode = node["items"] as JsonObject
+        val itemGenerator = ValueGeneratorsLookup.getGeneratorForType(itemsNode["type"]!!.jsonPrimitive.content)
         var arrayCount = ThreadLocalRandom.current().nextInt(6)
-        if (itemsNode.has("enum")) {
-            arrayCount = itemsNode.withArray<JsonNode>("enum").size()
+        if (itemsNode.containsKey("enum")) {
+            arrayCount = itemsNode["enum"]!!.jsonArray.size
         }
-        val values: MutableSet<String?> = HashSet()
+        val values: MutableSet<JsonElement> = HashSet()
         for (i in 0 until arrayCount) {
             values.add(itemGenerator.generateRandomValue(itemsNode))
         }
-        return values.stream().collect(Collectors.joining(",", "[", "]"))
+        return JsonArray(values.toList())
     }
 }
