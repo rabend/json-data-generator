@@ -1,27 +1,32 @@
 package com.github.rabend.generators
 
-import com.fasterxml.jackson.databind.JsonNode
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.boolean
+import kotlinx.serialization.json.double
+import kotlinx.serialization.json.jsonPrimitive
 import java.util.concurrent.ThreadLocalRandom
 
 class DoubleGenerator : AbstractValueGenerator() {
-    override fun generateRandomValue(node: JsonNode?): String? {
+    override fun generateRandomValue(node: JsonObject): JsonElement {
         val random = ThreadLocalRandom.current()
         var minVal = 0.0
         var maxVal = Double.MAX_VALUE
         var exclusive = false
-        if (node!!.has("minimum")) {
-            if (node.has("exclusiveMinimum")) {
-                exclusive = node["exclusiveMinimum"].asBoolean()
+        if (node.containsKey("minimum")) {
+            if (node.containsKey("exclusiveMinimum")) {
+                exclusive = node["exclusiveMinimum"]!!.jsonPrimitive.boolean
             }
-            minVal = node["minimum"].asDouble()
+            minVal = node["minimum"]!!.jsonPrimitive.double
             if (exclusive) {
                 minVal++
             }
         }
-        if (node.has("maximum")) {
-            maxVal = node["maximum"].asDouble()
+        if (node.containsKey("maximum")) {
+            maxVal = node["maximum"]!!.jsonPrimitive.double
         }
         val randomDouble = random.nextDouble(minVal, maxVal)
-        return randomDouble.toString()
+        return JsonPrimitive(randomDouble)
     }
 }
