@@ -1,31 +1,30 @@
 package com.github.rabend.generators
 
-import com.fasterxml.jackson.databind.JsonNode
-import java.util.stream.Collectors
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 class ObjectGenerator : AbstractValueGenerator() {
-    override fun generateRandomValue(node: JsonNode?): String {
+    override fun generateRandomValue(baseObject: JsonObject): JsonElement {
         val propertyToGenerator: MutableMap<String, AbstractValueGenerator> = HashMap()
-        return if (node!!.has("properties")) {
-            val propertiesNode = node["properties"]
-            propertiesNode.fields()
-                .forEachRemaining { (key, value): Map.Entry<String, JsonNode> ->
-                    propertyToGenerator[key] = ValueGeneratorsLookup.getGeneratorForType(
-                        value["type"].asText()
+        return if (baseObject.containsKey("properties")) {
+            val propertiesNode = baseObject["properties"] as JsonObject
+            propertiesNode.toList()
+                .forEach {
+                    propertyToGenerator[it.first] = ValueGeneratorsLookup.getGeneratorForType(
+                        (it.second as JsonObject)["type"]!!.jsonPrimitive.content
                     )
                 }
-            propertyToGenerator.entries
-                .stream()
+            val randomValues = propertyToGenerator.entries
                 .map { (propName, value): Map.Entry<String, AbstractValueGenerator> ->
-                    createKey(propName) + value.generateRandomValue(propertiesNode[propName])
+                    propName to value.generateRandomValue(propertiesNode[propName] as JsonObject)
                 }
-                .collect(Collectors.joining(",", "{", "}"))
+            Json.encodeToString(randomValues)
+            JsonObject(randomValues.toMap())
         } else {
-            "{}"
+            JsonObject(emptyMap())
         }
-    }
-
-    private fun createKey(prop: String): String {
-        return "\"$prop\":"
     }
 }
