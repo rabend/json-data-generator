@@ -1,7 +1,8 @@
 package com.github.rabend.generators
 
-import com.fasterxml.jackson.databind.JsonNode
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 
 abstract class AbstractValueGenerator {
-    abstract fun generateRandomValue(node: JsonNode?): String?
+    abstract fun generateRandomValue(node: JsonObject): JsonElement
 }
