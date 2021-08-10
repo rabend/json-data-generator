@@ -7,9 +7,9 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 import java.util.concurrent.ThreadLocalRandom
 
-class ArrayGenerator : AbstractValueGenerator() {
-    override fun generateRandomValue(node: JsonObject): JsonElement {
-        val itemsNode = node["items"] as JsonObject
+class ArrayGenerator: AbstractValueGenerator {
+    override fun generateRandomValue(baseObject: JsonObject): JsonElement {
+        val itemsNode = baseObject["items"] as JsonObject
         val itemGenerator = ValueGeneratorsLookup.getGeneratorForType(itemsNode["type"]!!.jsonPrimitive.content)
         var arrayCount = ThreadLocalRandom.current().nextInt(6)
         if (itemsNode.containsKey("enum")) {

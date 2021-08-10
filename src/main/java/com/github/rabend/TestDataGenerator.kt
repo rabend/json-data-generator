@@ -1,8 +1,10 @@
 package com.github.rabend
 
+import com.github.rabend.generators.ArrayGenerator
 import com.github.rabend.generators.ObjectGenerator
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import java.io.IOException
 import java.net.URL
 
@@ -20,6 +22,10 @@ class TestDataGenerator {
         val schemaString = schemaUrl.readText()
         val baseObject = Json.parseToJsonElement(schemaString) as JsonObject
 
-        return ObjectGenerator().generateRandomValue(baseObject).toString()
+        return when(baseObject["type"]?.jsonPrimitive?.content) {
+            "object" -> ObjectGenerator().generateRandomValue(baseObject).toString()
+            "array" -> ArrayGenerator().generateRandomValue(baseObject).toString()
+            else -> throw InvalidTypeException("Neither 'object' nor 'array' was given as top level type!")
+        }
     }
 }

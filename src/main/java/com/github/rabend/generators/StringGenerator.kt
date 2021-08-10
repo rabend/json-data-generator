@@ -10,10 +10,10 @@ import kotlinx.serialization.json.jsonPrimitive
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
-class StringGenerator : AbstractValueGenerator() {
-    override fun generateRandomValue(node: JsonObject): JsonElement {
-        if (node.containsKey(FORMAT)) {
-            val format = node[FORMAT]!!.jsonPrimitive.content
+class StringGenerator: AbstractValueGenerator {
+    override fun generateRandomValue(baseObject: JsonObject): JsonElement {
+        if (baseObject.containsKey(FORMAT)) {
+            val format = baseObject[FORMAT]!!.jsonPrimitive.content
             if (format.equals("date", ignoreCase = true)) {
                 return JsonPrimitive(SimpleDateGenerator().generateDate().toString())
             } else if (format.equals("date-time", ignoreCase = true)) {
@@ -22,23 +22,23 @@ class StringGenerator : AbstractValueGenerator() {
         }
         var maxLength = 50
         var minLength = 6
-        if (node.containsKey("maxLength")) {
-            maxLength = node["maxLength"]!!.jsonPrimitive.int + 1
+        if (baseObject.containsKey("maxLength")) {
+            maxLength = baseObject["maxLength"]!!.jsonPrimitive.int + 1
             minLength = 0
         }
-        if (node.containsKey("minLength")) {
-            minLength = node["minLength"]!!.jsonPrimitive.int
+        if (baseObject.containsKey("minLength")) {
+            minLength = baseObject["minLength"]!!.jsonPrimitive.int
         }
-        if (node.containsKey("pattern")) {
-            var regex = node["pattern"]!!.jsonPrimitive.content
+        if (baseObject.containsKey("pattern")) {
+            var regex = baseObject["pattern"]!!.jsonPrimitive.content
             regex = regex.replace("^", "")
             regex = regex.replace("$", "")
             val generex = Generex(regex)
             return JsonPrimitive(generex.random(minLength, maxLength - 1))
         }
         val random = ThreadLocalRandom.current()
-        if (node.containsKey("enum")) {
-            val enumNode = node["enum"]!!.jsonArray
+        if (baseObject.containsKey("enum")) {
+            val enumNode = baseObject["enum"]!!.jsonArray
             val upperBound = if (enumNode.size == 1) 1 else enumNode.size - 1
             val randomIndex = random.nextInt(upperBound)
             return JsonPrimitive(enumNode[randomIndex].jsonPrimitive.content)

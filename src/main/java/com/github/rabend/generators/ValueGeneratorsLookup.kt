@@ -5,11 +5,7 @@ object ValueGeneratorsLookup {
 
     @JvmStatic
     fun getGeneratorForType(typeName: String): AbstractValueGenerator {
-        return if (generators.containsKey(typeName)) {
-            generators[typeName]!!
-        } else {
-            throw NoGeneratorFoundException("No generator for type name '$typeName'")
-        }
+        return generators.getOrElse(typeName) { throw NoGeneratorFoundException("No generator for type name '$typeName'") }
     }
 
     init {

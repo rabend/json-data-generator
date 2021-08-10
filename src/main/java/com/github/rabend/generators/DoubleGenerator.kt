@@ -8,23 +8,23 @@ import kotlinx.serialization.json.double
 import kotlinx.serialization.json.jsonPrimitive
 import java.util.concurrent.ThreadLocalRandom
 
-class DoubleGenerator : AbstractValueGenerator() {
-    override fun generateRandomValue(node: JsonObject): JsonElement {
+class DoubleGenerator: AbstractValueGenerator {
+    override fun generateRandomValue(baseObject: JsonObject): JsonElement {
         val random = ThreadLocalRandom.current()
         var minVal = 0.0
         var maxVal = Double.MAX_VALUE
         var exclusive = false
-        if (node.containsKey("minimum")) {
-            if (node.containsKey("exclusiveMinimum")) {
-                exclusive = node["exclusiveMinimum"]!!.jsonPrimitive.boolean
+        if (baseObject.containsKey("minimum")) {
+            if (baseObject.containsKey("exclusiveMinimum")) {
+                exclusive = baseObject["exclusiveMinimum"]!!.jsonPrimitive.boolean
             }
-            minVal = node["minimum"]!!.jsonPrimitive.double
+            minVal = baseObject["minimum"]!!.jsonPrimitive.double
             if (exclusive) {
                 minVal++
             }
         }
-        if (node.containsKey("maximum")) {
-            maxVal = node["maximum"]!!.jsonPrimitive.double
+        if (baseObject.containsKey("maximum")) {
+            maxVal = baseObject["maximum"]!!.jsonPrimitive.double
         }
         val randomDouble = random.nextDouble(minVal, maxVal)
         return JsonPrimitive(randomDouble)
