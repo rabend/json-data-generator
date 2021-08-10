@@ -1,5 +1,6 @@
 package com.github.rabend
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.equality.shouldNotBeEqualToComparingFields
 import io.kotest.matchers.types.shouldBeTypeOf
@@ -35,4 +36,12 @@ class TestDataGeneratorSpec: StringSpec({
         array1 shouldNotBeEqualToComparingFields array2
     }
 
+    "throw exception for non-array and non-object types" {
+        val generator = TestDataGenerator()
+        val schemaUrl = this.javaClass.getResource("/schema/Invalid.json")
+
+        shouldThrow<InvalidTypeException> {
+            generator.generateJsonString(schemaUrl)
+        }
+    }
 })

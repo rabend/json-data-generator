@@ -5,6 +5,8 @@ import io.kotest.matchers.doubles.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.double
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -21,6 +23,15 @@ class ObjectGeneratorSpec: StringSpec({
         randomObject.containsKey("type") shouldBe true
         randomObject["ean"]!!.jsonPrimitive.isString shouldBe true
         randomObject["type"]!!.jsonPrimitive.double shouldBeGreaterThan 0.0
+    }
+
+    "generate empty object if baseObject is missing 'properties' key" {
+        val baseObject = buildJsonObject {
+            put("type", JsonPrimitive("object"))
+        }
+
+        val emptyObject = ObjectGenerator().generateRandomValue(baseObject).jsonObject
+        emptyObject.size shouldBe 0
     }
 
 })
